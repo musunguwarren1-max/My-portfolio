@@ -46,61 +46,101 @@
         </div>
     </div>
 
-    <script>
-        const orb = document.getElementById('ai-orb');
-        const status = document.getElementById('status');
-        const output = document.getElementById('output');
+<script>
+    const orb = document.getElementById('ai-orb');
+    const status = document.getElementById('status');
+    const output = document.getElementById('output');
 
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        
-        if (!SpeechRecognition) {
-            alert("Your browser does not support AI Voice. Use Chrome/Edge.");
-        } else {
-            const recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.lang = 'en-US';
+    // AI Personality & Memory
+    const AI_NAME = "Velocity Alpha";
+    let userName = localStorage.getItem('user_name') || "";
 
-            recognition.onstart = () => {
-                orb.classList.add('listening', 'bg-red-600');
-                status.innerText = "VELOCITY AI IS LISTENING...";
-            };
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false; // Set to false for better "turn-taking" conversation
+    recognition.lang = 'en-US';
 
-            recognition.onresult = (event) => {
-                const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
-                output.innerText = `"${transcript}"`;
-
-                // LOGIC ENGINE
-                if (transcript.includes("theme to red")) {
-                    document.body.style.backgroundColor = "#450a0a";
-                    speak("Adjusting visual spectrum to red.");
-                } 
-                else if (transcript.includes("theme to blue")) {
-                    document.body.style.backgroundColor = "#020617";
-                    speak("Returning to deep space blue.");
-                }
-                else if (transcript.includes("developer")) {
-                    speak("The developer is the visionary Warren Musungu, working at constant velocity.");
-                }
-                else if (transcript.includes("time")) {
-                    const time = new Date().toLocaleTimeString();
-                    speak(`The current system time is ${time}`);
-                }
-                else if (transcript.includes("portfolio")) {
-                    speak("Redirecting to the command center.");
-                    setTimeout(() => window.location.href = "../index.html", 2000);
-                }
-            };
-
-            function speak(text) {
-                const synth = window.speechSynthesis;
-                const utter = new SpeechSynthesisUtterance(text);
-                utter.pitch = 0.8;
-                utter.rate = 1;
-                synth.speak(utter);
-            }
-
-            orb.onclick = () => recognition.start();
+    // The "Brain" - Pattern Matching for Human-like conversation
+    const brain = {
+        "hello": ["Hello Warren. How can I assist your mission today?", "Systems online. I am ready when you are.", "Greetings. Your velocity is looking constant today."],
+        "who are you": [`I am ${AI_NAME}, a neural interface developed by Warren Musungu in 2026.`],
+        "how are you": ["My processors are running at peak efficiency. I feel... optimized.", "I am functioning perfectly. Thank you for asking."],
+        "your name": [`My designation is ${AI_NAME}, but you can call me your assistant.`],
+        "thank you": ["You are welcome. Productivity is its own reward.", "No problem, Warren. What is our next move?"],
+        "my name is": (text) => {
+            const name = text.split("my name is ")[1];
+            localStorage.setItem('user_name', name);
+            return `Pleased to meet you, ${name}. I have logged your identity into my core memory.`;
         }
-    </script>
+    };
+
+    recognition.onstart = () => {
+        orb.classList.add('listening', 'bg-red-600');
+        status.innerText = "ALPHABEAM ACTIVE: SPEAK NOW...";
+    };
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        output.innerText = `You: "${transcript}"`;
+        processCommand(transcript);
+    };
+
+    recognition.onend = () => {
+        orb.classList.remove('listening', 'bg-red-600');
+        status.innerText = "System Idle. Tap the orb to speak.";
+    };
+
+    function processCommand(text) {
+        let response = "I heard you, but that command is not in my current logic. Should I search the web?";
+
+        // Check the "Brain" for a match
+        for (let key in brain) {
+            if (text.includes(key)) {
+                if (typeof brain[key] === 'function') {
+                    response = brain[key](text);
+                } else {
+                    const options = brain[key];
+                    response = options[Math.floor(Math.random() * options.length)];
+                }
+                break;
+            }
+        }
+
+        // Action Commands
+        if (text.includes("time")) response = `The current system time is ${new Date().toLocaleTimeString()}.`;
+        if (text.includes("clear memory")) {
+            localStorage.clear();
+            response = "Memory wiped. I no longer know who you are.";
+        }
+
+        speak(response);
+    }
+
+    function speak(text) {
+        const synth = window.speechSynthesis;
+        const utter = new SynthesisUtterance(text);
+        
+        // Make it sound more "Cyber"
+        utter.pitch = 0.9; 
+        utter.rate = 1.1; 
+        
+        // Find a cool voice if available
+        const voices = synth.getVoices();
+        utter.voice = voices.find(v => v.name.includes("Google UK English Male")) || voices[0];
+
+        utter.onstart = () => {
+            status.innerText = "VELOCITY AI IS RESPONDING...";
+            orb.classList.add('bg-green-500'); // Glow green when talking
+        };
+        utter.onend = () => {
+            status.innerText = "Awaiting next command...";
+            orb.classList.remove('bg-green-500');
+        };
+
+        synth.speak(utter);
+    }
+
+    orb.onclick = () => recognition.start();
+</script>
 </body>
 </html>
