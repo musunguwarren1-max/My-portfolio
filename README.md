@@ -1,42 +1,35 @@
-# 🚀 Warren Musungu | Digital Excellence at Constant Velocity
+# 🚀 Warren Musungu | Digital Visionary 2026
+### *Maintaining Constant Velocity in Full-Stack Innovation*
 
-Welcome to my official portfolio ecosystem. I specialize in building high-performance, functional web applications using a mobile-first, terminal-based workflow.
-
-## 🌐 Live Portfolio
-[https://musunguwarren1-max.github.io/My-portfolio/](https://musunguwarren1-max.github.io/My-portfolio/)
+Welcome to my professional ecosystem. This repository is not just a portfolio; it is a live laboratory of functional web applications and experimental AI, all developed within a mobile-first Termux environment.
 
 ---
 
-## 🛠️ The Project Ecosystem
-This repository hosts a suite of tools built for speed and functionality:
-
-### 1. [Velocity Finance](https://musunguwarren1-max.github.io/My-portfolio/finance-tool/)
-* **What it is:** A real-time currency converter.
-* **Tech:** JavaScript `Fetch API`, `Async/Await`, Tailwind CSS.
-* **Feature:** Pulls live market data to convert USD to KES instantly.
-
-### 2. [Task Master](https://musunguwarren1-max.github.io/My-portfolio/task-master/)
-* **What it is:** A persistent productivity app.
-* **Tech:** JavaScript `LocalStorage`, DOM Manipulation.
-* **Feature:** Saves your data even after the browser is closed.
-
-### 3. [Social Link Hub](https://musunguwarren1-max.github.io/My-portfolio/links/)
-* **What it is:** A custom-branded alternative to Linktree.
-* **Tech:** Mobile-responsive HTML/CSS.
+## ⚡ The Live Ecosystem
+| Project Name | Purpose | Tech Stack | Status |
+| :--- | :--- | :--- | :--- |
+| [**Main Command Center**](https://musunguwarren1-max.github.io/My-portfolio/) | Professional Portfolio | HTML5, Tailwind CSS | 🟢 Live |
+| [**Ghost Scanner AI**](https://musunguwarren1-max.github.io/My-portfolio/ghost-scanner/) | Real-time Object Detection | TensorFlow.js, COCO-SSD | 🔴 Experimental |
+| [**Velocity Alpha AI**](https://musunguwarren1-max.github.io/My-portfolio/ai-voice-command/) | Voice-to-Action Interface | Web Speech API, JS | 🟡 Refining |
+| [**Velocity Finance**](https://musunguwarren1-max.github.io/My-portfolio/finance-tool/) | Real-time KES Converter | Fetch API, Async/Await | 🟢 Live |
+| [**Task Master**](https://musunguwarren1-max.github.io/My-portfolio/task-master/) | Persistent Productivity | LocalStorage, DOM | 🟢 Live |
+| [**Social Link Hub**](https://musunguwarren1-max.github.io/My-portfolio/links/) | Bio Link Directory | Mobile-First CSS | 🟢 Live |
 
 ---
 
-## 💻 Technical Proficiencies
-* **Environment:** Expert use of **Termux** for mobile development and Git operations.
-* **Frontend:** HTML5, CSS3 (Tailwind), Modern JavaScript (ES6+).
-* **Integration:** Connecting web apps to external **APIs** for live data.
+## 🛠️ Technical Stack
+* **Workflow:** 100% Termux-based development (CLI-centric).
+* **Intelligence:** Edge AI integration via TensorFlow.js.
+* **Frontend:** Modern JavaScript (ES2026), Tailwind CSS, Glassmorphism UI.
+* **Version Control:** Git/GitHub for CI/CD deployment.
 
-## 🤝 Contact & Hire
-I help businesses maintain "Constant Velocity" in their digital growth.
-
-* **WhatsApp:** [Chat with me](https://wa.me/qr/27ZE4HHAMGZRC1)
-* **Instagram:** [@Ljwarrren](https://instagram.com/Ljwarrren)
-* **Status:** Available for freelance projects.
-
----
-*“Speed is temporary, but Velocity is focused.”* 🚀
+## 📁 Repository Structure
+```text
+.
+├── assets/             # Professional CV & Media
+├── ai-voice-command/   # Natural Language Interface
+├── finance-tool/       # Live API Currency Converter
+├── ghost-scanner/      # Computer Vision AI
+├── links/              # Social Link Directory
+├── task-master/        # Productivity App
+└── index.html          # Main Portfolio Entry
