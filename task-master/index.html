@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocity Tasks | Warren Musungu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .completed { text-decoration: line-through; opacity: 0.5; }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-white min-h-screen flex flex-col items-center py-10 px-4">
+
+    <div class="max-w-md w-full">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-blue-500 mb-2">Task Master</h1>
+            <p class="text-gray-400 text-sm">Organize your workflow at constant velocity.</p>
+        </div>
+
+        <div class="glass p-4 rounded-2xl mb-6 flex gap-2">
+            <input type="text" id="taskInput" placeholder="Add a new goal..." 
+                class="bg-transparent border-none outline-none flex-1 px-2 text-white placeholder-gray-500">
+            <button onclick="addTask()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl transition">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+
+        <ul id="taskList" class="space-y-3">
+            </ul>
+    </div>
+
+    <script>
+        const taskInput = document.getElementById('taskInput');
+        const taskList = document.getElementById('taskList');
+        let tasks = JSON.parse(localStorage.getItem('warren_tasks')) || [];
+
+        function renderTasks() {
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = `glass p-4 rounded-xl flex items-center justify-between animate-fade-in`;
+                li.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                            onchange="toggleTask(${index})" 
+                            class="w-5 h-5 rounded border-gray-700 bg-transparent text-blue-600">
+                        <span class="${task.completed ? 'completed' : ''} font-medium">${task.text}</span>
+                    </div>
+                    <button onclick="deleteTask(${index})" class="text-gray-500 hover:text-red-500 transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                taskList.appendChild(li);
+            });
+            localStorage.setItem('warren_tasks', JSON.stringify(tasks));
+        }
+
+        function addTask() {
+            const text = taskInput.value.trim();
+            if (text) {
+                tasks.push({ text, completed: false });
+                taskInput.value = '';
+                renderTasks();
+            }
+        }
+
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            renderTasks();
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            renderTasks();
+        }
+
+        // Allow "Enter" key to add tasks
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+
+        renderTasks(); // Initial load
+    </script>
+</body>
+</html>
