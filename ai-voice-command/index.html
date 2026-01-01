@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocity AI | Voice Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glow { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+        .listening { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center justify-center p-6 font-mono">
+
+    <div class="max-w-2xl w-full text-center">
+        <div id="ai-orb" class="w-32 h-32 bg-blue-600 rounded-full mx-auto mb-8 glow flex items-center justify-center transition-all duration-500">
+            <i class="fa-solid fa-microphone text-4xl"></i>
+        </div>
+
+        <h1 class="text-3xl font-bold mb-2 tracking-tighter">VELOCITY AI INTERFACE</h1>
+        <p id="status" class="text-blue-400 text-sm mb-12">System Ready. Awaiting Voice Command...</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+            <div class="bg-[#0f172a] p-4 rounded-xl border border-blue-900/50">
+                <span class="text-blue-500 text-xs">COMMAND 01</span>
+                <p class="text-sm">"Change theme to red"</p>
+            </div>
+            <div class="bg-[#0f172a] p-4 rounded-xl border border-blue-900/50">
+                <span class="text-blue-500 text-xs">COMMAND 02</span>
+                <p class="text-sm">"Tell me the time"</p>
+            </div>
+            <div class="bg-[#0f172a] p-4 rounded-xl border border-blue-900/50">
+                <span class="text-blue-500 text-xs">COMMAND 03</span>
+                <p class="text-sm">"Who is the developer?"</p>
+            </div>
+            <div class="bg-[#0f172a] p-4 rounded-xl border border-blue-900/50">
+                <span class="text-blue-500 text-xs">COMMAND 04</span>
+                <p class="text-sm">"Go to my portfolio"</p>
+            </div>
+        </div>
+
+        <div id="output" class="mt-10 p-6 bg-white/5 rounded-2xl italic text-gray-400 min-h-[60px]">
+            "Listening for your voice..."
+        </div>
+    </div>
+
+    <script>
+        const orb = document.getElementById('ai-orb');
+        const status = document.getElementById('status');
+        const output = document.getElementById('output');
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (!SpeechRecognition) {
+            alert("Your browser does not support AI Voice. Use Chrome/Edge.");
+        } else {
+            const recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                orb.classList.add('listening', 'bg-red-600');
+                status.innerText = "VELOCITY AI IS LISTENING...";
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
+                output.innerText = `"${transcript}"`;
+
+                // LOGIC ENGINE
+                if (transcript.includes("theme to red")) {
+                    document.body.style.backgroundColor = "#450a0a";
+                    speak("Adjusting visual spectrum to red.");
+                } 
+                else if (transcript.includes("theme to blue")) {
+                    document.body.style.backgroundColor = "#020617";
+                    speak("Returning to deep space blue.");
+                }
+                else if (transcript.includes("developer")) {
+                    speak("The developer is the visionary Warren Musungu, working at constant velocity.");
+                }
+                else if (transcript.includes("time")) {
+                    const time = new Date().toLocaleTimeString();
+                    speak(`The current system time is ${time}`);
+                }
+                else if (transcript.includes("portfolio")) {
+                    speak("Redirecting to the command center.");
+                    setTimeout(() => window.location.href = "../index.html", 2000);
+                }
+            };
+
+            function speak(text) {
+                const synth = window.speechSynthesis;
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.pitch = 0.8;
+                utter.rate = 1;
+                synth.speak(utter);
+            }
+
+            orb.onclick = () => recognition.start();
+        }
+    </script>
+</body>
+</html>
