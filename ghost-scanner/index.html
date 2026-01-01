@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocity Ghost Scanner | Warren Musungu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <style>
+        body { background: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
+        #video-container { position: relative; width: 100vw; height: 100vh; }
+        video, canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .hud { position: absolute; top: 20px; left: 20px; z-index: 10; color: #00ff00; text-shadow: 0 0 10px #00ff00; pointer-events: none; }
+        .scan-line { position: absolute; width: 100%; height: 2px; background: rgba(0, 255, 0, 0.5); top: 0; animation: scan 3s linear infinite; z-index: 5; }
+        @keyframes scan { from { top: 0%; } to { top: 100%; } }
+    </style>
+</head>
+<body>
+
+    <div id="video-container">
+        <div class="hud">
+            <h1 class="text-xl font-bold tracking-widest">VELOCITY GHOST SCANNER v1.0</h1>
+            <p id="ai-status" class="text-xs">SYSTEM INITIALIZING...</p>
+            <div id="stats" class="mt-4 text-[10px] space-y-1">
+                <p>LATENCY: <span id="lat">0</span>ms</p>
+                <p>COGNITION: ACTIVE</p>
+                <p>SOURCE: WARREN_MUSUNGU_OS</p>
+            </div>
+        </div>
+        
+        <div class="scan-line"></div>
+        <video id="webcam" autoplay muted playsinline></video>
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const status = document.getElementById('ai-status');
+        const latDisplay = document.getElementById('lat');
+
+        let model;
+
+        // Initialize Camera
+        async function setupCamera() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+            video.srcObject = stream;
+            return new Promise((resolve) => video.onloadedmetadata = () => resolve(video));
+        }
+
+        // Run AI Detection
+        async function detect() {
+            const start = performance.now();
+            const predictions = await model.detect(video);
+            const end = performance.now();
+            
+            latDisplay.innerText = Math.round(end - start);
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            predictions.forEach(prediction => {
+                const [x, y, width, height] = prediction.bbox;
+                
+                // Draw Box
+                ctx.strokeStyle = "#00ff00";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, width, height);
+                
+                // Draw Label
+                ctx.fillStyle = "#00ff00";
+                ctx.font = "bold 16px Courier New";
+                ctx.fillText(`${prediction.class.toUpperCase()} [${Math.round(prediction.score * 100)}%]`, x, y > 20 ? y - 5 : 20);
+                
+                // Draw HUD corners
+                ctx.beginPath();
+                ctx.moveTo(x, y + 20); ctx.lineTo(x, y); ctx.lineTo(x + 20, y);
+                ctx.stroke();
+            });
+
+            requestAnimationFrame(detect);
+        }
+
+        async function main() {
+            status.innerText = "LOADING NEURAL NETWORK...";
+            model = await cocoSsd.load();
+            status.innerText = "CAMERA ACCESSING...";
+            await setupCamera();
+            
+            // Set canvas size
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            status.innerText = "GHOST SCANNER LIVE";
+            detect();
+        }
+
+        main();
+    </script>
+</body>
+</html>
